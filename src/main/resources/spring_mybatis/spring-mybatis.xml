@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 数据库配置信息写在一个独立的文件，便于管理-->
+    <!-- 让spring知道配置文件位置 -->
+    <context:property-placeholder location="classpath:spring_mybatis/jabc.properties"/>
+
+    <!-- 数据源 -->
+    <bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+        init-method="init" destroy-method="close">
+        <!-- jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC-->
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="maxActive" value="${jadc.maxActive}"></property>
+    </bean>
+
+    <!-- SqlSessionFactory -->
+    <!-- 声明SqlSessionFactoryBean类,这个类内部创建sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="myDataSource"/>
+        <!-- configLocation是Resource类型，用来读取配置文件 -->
+        <property name="configLocation" value="classpath:spring_mybatis/mybatis.xml"/>
+    </bean>
+
+    <!-- dao（通过动态代理创建dao的代理类） -->
+    <!-- 创建dao对象，使用sqlSession的getMapper(xx.class) -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 指定SqlSessionFactory的对象id -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!-- 指定包名，包名是dao接口所在包。MapperScannerConfigurer会扫描这个包所有接口，
+             把每个接口都执行一次getMapper()方法，得到每个接口的dao对象。
+             创建好的dao对象放入spring容器中 默认名称为接口首字母小写-->
+        <!-- 多个包可用 逗号 隔开 -->
+        <property name="basePackage" value="com.hz.spring_mybatis.dao"/>
+    </bean>
+
+    <bean id="studentService" class="com.hz.spring_mybatis.service.Impl.StudentServiceImpl">
+        <property name="studentDao" ref="studentDao"/>
+    </bean>
+</beans>

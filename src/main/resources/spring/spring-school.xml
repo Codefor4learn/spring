@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="school" class="com.hz.spring_ioc.service.DAO.School">
+        <property name="name" value="博爱学校"></property>
+        <property name="address" value="蓝山县"></property>
+    </bean>
+
+    <!--<bean id="school2" class="com.hz.spring_ioc_ioc.service.DAO.PrimarySchool">
+        <property name="name" value="博爱小学"></property>
+        <property name="address" value="蓝山县3"></property>
+    </bean>-->
+</beans>
